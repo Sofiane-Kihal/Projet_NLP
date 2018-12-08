@@ -5,14 +5,14 @@ from functions import *
 
 #nlp = StanfordCoreNLP('stanford-corenlp-full-2018-10-05')
 
-file = open('Hamlet.txt','r+')
+file = open('TheLionKing.txt','r+')
 text = file.read()
 text = text.replace("’\n","\n")
 PERSON = []
 DEPENDENCY = [[]]*len(text)
 TOKENS = []
 RELATIONSHIP = {}
-LINKS = ['son','father','mother','daughter','cousin','siblings','husband','wife','spouses','brother','sister','friend','girlfriend','boyfriend']
+LINKS = ['son','father','mother','daughter','cousin','siblings','husband','wife','spouses','brother','sister','friend','girlfriend','boyfriend', 'uncle','aunt','nephew','niece']
 LINK_CORRESPONDANCE = {
     'son' : 'parent',
     'father' : 'child',
@@ -27,7 +27,11 @@ LINK_CORRESPONDANCE = {
     'sister' : 'siblings',
     'friend' : 'friend',
     'girlfriend' : 'couple',
-    'boyfriend' : 'couple'
+    'boyfriend' : 'couple',
+    'uncle' : 'nephew/niece',
+    'aunt' : 'nephew/niece',
+    'nephew' : 'uncle/aunt',
+    'niece' : 'uncle/aunt'
 }
 
 # EXTRACTION DES ENTITES NOMMEES

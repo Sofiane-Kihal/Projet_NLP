@@ -8,7 +8,7 @@ def extract_NE(text, PERSON):
     """Stocke dans une liste (PERSON) les entités nommées d'un texte (text)"""
     NE = nlp.ner(text)
     for elt in NE:
-        if 'PERSON' in elt:
+        if 'PERSON' in elt or 'TITLE' in elt:
             PERSON.append(elt[0])
 
     return (list(set(PERSON)))
@@ -112,7 +112,7 @@ def replace_by_NE(text_split, PERSON):
     return result
 
 
-def fill_relationship(DEPENDENCY, TOKENS, LINKS, RELATIONSHIP):
+def fill_relationship(DEPENDENCY, TOKENS, LINKS, RELATIONSHIP, INCOMPLETE_RELATIONSHIP):
     """
     Remplis le dictionnaire RELATIONSHIP avec les relations qui ont pu être extraites à l'aide de la fonction
     'make_relation()'
@@ -134,7 +134,7 @@ def fill_relationship(DEPENDENCY, TOKENS, LINKS, RELATIONSHIP):
     encoded_relationship = []
     id_NaN = 0
 
-    # Pour toutes les dépendances qu'on a recueillis dans le tableau DEPENDENCY on créer les relations qui existent
+    # Pour toutes les dépendances qu'on a recueilli dans le tableau DEPENDENCY on crée les relations qui existent
     # en utilisant la fonction make_relation et on les stocke dans la liste tmp
     for elt in DEPENDENCY:
         try:
@@ -176,10 +176,17 @@ def fill_relationship(DEPENDENCY, TOKENS, LINKS, RELATIONSHIP):
             lien = r[1] - 1
             perso1 = r[2] - 1
 
-            if ((TOKENS[line][lien]) in LINKS):
-                RELATIONSHIP[str(r[0]) + str(id_NaN)] = [(TOKENS[line][lien], TOKENS[line][perso1])]
+            try:
+                if ((TOKENS[line][lien]) in LINKS):
+                    INCOMPLETE_RELATIONSHIP[TOKENS[line][perso1]] += [(TOKENS[line][lien], str(r[0]) + str(id_NaN))]
 
-                id_NaN += 1
+                    id_NaN += 1
+            except:
+
+                if ((TOKENS[line][lien]) in LINKS):
+                    INCOMPLETE_RELATIONSHIP[TOKENS[line][perso1]] = [(TOKENS[line][lien], str(r[0]) + str(id_NaN))]
+
+                    id_NaN += 1
 
 
 def make_correspondance(RELATIONSHIP, LINK_CORRESPONDANCE):

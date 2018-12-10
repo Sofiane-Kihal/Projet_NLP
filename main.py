@@ -5,13 +5,14 @@ from functions import *
 
 #nlp = StanfordCoreNLP('stanford-corenlp-full-2018-10-05')
 
-file = open('TheLionKing.txt','r+')
+file = open('Hamlet.txt','r+')
 text = file.read()
 text = text.replace("’\n","\n")
 PERSON = []
 DEPENDENCY = [[]]*len(text)
 TOKENS = []
 RELATIONSHIP = {}
+INCOMPLETE_RELATIONSHIP = {}
 LINKS = ['son','father','mother','daughter','cousin','siblings','husband','wife','spouses','brother','sister','friend','girlfriend','boyfriend', 'uncle','aunt','nephew','niece']
 LINK_CORRESPONDANCE = {
     'son' : 'parent',
@@ -53,8 +54,11 @@ extract_dependencies(text_tokens,DEPENDENCY)
 # REMPLISSAGE DU DICTIONNAIRE 'RELATIONSHIP' QUI CONTIENT LES RELATIONS ENTRE LES PERSONNAGES
 fill_relationship(DEPENDENCY,TOKENS,LINKS,RELATIONSHIP)
 
-# CREATION DU SYMETRIQUE DE 'RELATIONSHIP' ET FUSION DES DEUX DICTIONNAIRES
+# CREATION DU SYMETRIQUE DE 'RELATIONSHIP' et de 'INCOMPLETE_RELATIONSHIP' ET FUSION DES DEUX DICTIONNAIRES
 corresponding_RELATIONSHIP = make_correspondance(RELATIONSHIP,LINK_CORRESPONDANCE)
+corresponding_INCOMPLETE_RELATIONSHIP = make_correspondance(INCOMPLETE_RELATIONSHIP,LINK_CORRESPONDANCE)
+
 merge_dictionnary(RELATIONSHIP,corresponding_RELATIONSHIP)
+merge_dictionnary(INCOMPLETE_RELATIONSHIP,corresponding_INCOMPLETE_RELATIONSHIP)
 
 print(RELATIONSHIP)

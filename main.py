@@ -3,17 +3,29 @@
 #import re
 from functions import *
 
-#nlp = StanfordCoreNLP('stanford-corenlp-full-2018-10-05')
+#On ouvre le fichier contenant le texte
+f_text = open('Hamlet.txt','r+')
 
-file = open('Hamlet.txt','r+')
-text = file.read()
+#On ouvre et stocke les fichiers contenant les solutions (ils vont nous permettre d'évaluer notre application)
+f_characters = open('Hamlet_CHARACTERS.txt','r+')
+f_relationships = open('Hamlet_RELATIONSHIPS.txt','r+')
+file_characters = f_characters.read()
+file_relationships = f_relationships.read()
+
+#On stocke le texte original et on retire ce qui pourrait fausser l'analyse des fonctions de la librairie nltk/stanfordcorenlp
+text = f_text.read()
 text = text.replace("’\n","\n")
-PERSON = []
-DEPENDENCY = [[]]*len(text)
+
+#On initialise nos variables
+CHARACTERS = []
+DEPENDENCIES = [[]]*len(text)
 TOKENS = []
-RELATIONSHIP = {}
+
+#RELATIONSHIPS contient le résultat final
+RELATIONSHIPS = {}
 INCOMPLETE_RELATIONSHIP = {}
-LINKS = ['son','father','mother','daughter','cousin','siblings','husband','wife','spouses','brother','sister','friend','girlfriend','boyfriend', 'uncle','aunt','nephew','niece']
+
+LINKS = ['son','father','mother','daughter','cousin','siblings','husband','wife','companion','mate','spouses','brother','sister','friend','girlfriend','boyfriend', 'uncle','aunt','nephew','niece','friends']
 LINK_CORRESPONDANCE = {
     'son' : 'parent',
     'father' : 'child',
@@ -32,33 +44,49 @@ LINK_CORRESPONDANCE = {
     'uncle' : 'nephew/niece',
     'aunt' : 'nephew/niece',
     'nephew' : 'uncle/aunt',
-    'niece' : 'uncle/aunt'
+    'niece' : 'uncle/aunt',
+    'mate' : 'mate',
+    'companion' : 'companion',
+    'friends' : 'friend'
 }
 
-# EXTRACTION DES ENTITES NOMMEES
+#On extrait les personnages du texte, on les stocke dans CHARACTERS et on initialise notre dictionnaire RELATIONSHIP
+CHARACTERS = extract_NE(text,CHARACTERS)
+init_relationships(RELATIONSHIPS,CHARACTERS)
 
-PERSON = extract_NE(text,PERSON)
-init_relationship(RELATIONSHIP,PERSON)
-
-# CREATION DE LA LISTE TOKENS
+#On procède à du traitement sur le texte original :
+# on découpe le texte par mot et on remplace les occurences faisant référence aux personnages telles que 'him/his/her/etc..' par le nom des personnages et on reconstitue le texte.
+# On découpe en tokens de phrase ce nouveau texte.
+# Enfin, on tokénise par mot chaque phrase et on la stocke dans TOKENS où on a une liste de liste, chacune des sous-listes contenant une phrase tokenizée en mots .
 tmp_text = text.split()
-text = replace_by_NE(tmp_text,PERSON)
+text = replace_by_NE(tmp_text,CHARACTERS)
 text_tokens = sent_tokenize(text)
 
 for line in text_tokens :
     TOKENS.append(nlp.word_tokenize(line))
 
-# EXTRACTION DES DEPENDANCES GRAMMATICALES
-extract_dependencies(text_tokens,DEPENDENCY)
+#On fait l'analyse des dépendences grammaticales et on les stocke dans DEPENDENCIES.
+parsing = nlp.dependency_parse(text)
+extract_dependencies(text_tokens,DEPENDENCIES)
 
-# REMPLISSAGE DU DICTIONNAIRE 'RELATIONSHIP' QUI CONTIENT LES RELATIONS ENTRE LES PERSONNAGES
-fill_relationship(DEPENDENCY,TOKENS,LINKS,RELATIONSHIP)
+#On remplit RELATIONSHIPS par les relations qu'on a réussi à extraire à l'aide de nos méthodes
+fill_relationships(DEPENDENCIES,TOKENS,LINKS,RELATIONSHIPS, INCOMPLETE_RELATIONSHIP)
 
-# CREATION DU SYMETRIQUE DE 'RELATIONSHIP' et de 'INCOMPLETE_RELATIONSHIP' ET FUSION DES DEUX DICTIONNAIRES
-corresponding_RELATIONSHIP = make_correspondance(RELATIONSHIP,LINK_CORRESPONDANCE)
-corresponding_INCOMPLETE_RELATIONSHIP = make_correspondance(INCOMPLETE_RELATIONSHIP,LINK_CORRESPONDANCE)
+#On crée le symétrique des relations qu'on a extraite (voir la fonction corresponding_RELATIONSHIPS pour plus d'informations)
+corresponding_RELATIONSHIPS = make_correspondance(RELATIONSHIPS,LINK_CORRESPONDANCE)
+#corresponding_INCOMPLETE_RELATIONSHIP = make_correspondance(INCOMPLETE_RELATIONSHIP,LINK_CORRESPONDANCE)
 
-merge_dictionnary(RELATIONSHIP,corresponding_RELATIONSHIP)
-merge_dictionnary(INCOMPLETE_RELATIONSHIP,corresponding_INCOMPLETE_RELATIONSHIP)
+#On fusionne RELATIONSHIPS et son symétrique pour obtenir la totalité des relations
+merge_dictionnary(RELATIONSHIPS,corresponding_RELATIONSHIPS)
+#merge_dictionnary(INCOMPLETE_RELATIONSHIP,corresponding_INCOMPLETE_RELATIONSHIP)
 
-print(RELATIONSHIP)
+#On affiche le resultat
+
+print("LES RELATIONS ENTRE LES PERSONNAGES DU TEXTE :")
+for elt in RELATIONSHIPS :
+    print(elt,' :', RELATIONSHIPS[elt])
+
+#On évalue le résultat
+print("EVALUATION :")
+sol_CHARACTERS, sol_RELATIONSHIPS = makefile_solutions(file_characters,file_relationships)
+accuracy(sol_CHARACTERS,sol_RELATIONSHIPS,RELATIONSHIPS)

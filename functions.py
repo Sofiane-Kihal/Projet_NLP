@@ -236,7 +236,7 @@ def merge_dictionnary(dict1, dict2):
                 dict1[elt] = [i]
 
 
-def accuracy(sol_CHARACTERS, sol_RELATIONSHIPS, RELATIONSHIPS):
+def accuracy(sol_CHARACTERS, sol_RELATIONSHIPS, RELATIONSHIPS, LINK_CORRESPONDANCE):
     """Calcule la précision et le rappel du resultat de notre programme
 
     arguments :
@@ -244,6 +244,7 @@ def accuracy(sol_CHARACTERS, sol_RELATIONSHIPS, RELATIONSHIPS):
     sol_CHARACTERS : une liste contenant tous les personnages du texte (conçue par l'utilisateur)
     sol_RELATIONSHIPS : une liste contenant toutes les relations entre les personnages du texte (conçue par l'utilisateur)
     RELATIONSHIPS : le dictionnaire résultant de l'application
+    LINK_CORRESPONDANCE : dictionnaire contenant le symétrique de chaque nom de relation
 
 
     """
@@ -253,7 +254,7 @@ def accuracy(sol_CHARACTERS, sol_RELATIONSHIPS, RELATIONSHIPS):
     denominator_precision = 0
     result_precision = 0
 
-    denominator_recall = len(sol_CHARACTERS) + len(sol_RELATIONSHIP) * 2
+    denominator_recall = len(sol_CHARACTERS) + len(sol_RELATIONSHIPS) * 2
     result_recall = 0
 
     tmp = []

@@ -1,14 +1,13 @@
-#from stanfordcorenlp import StanfordCoreNLP
-#from nltk.tokenize import sent_tokenize, word_tokenize
-#import re
 from functions import *
 
+name_file = str(input("Entrez le nom du fichier de texte :\n"))
+
 #On ouvre le fichier contenant le texte
-f_text = open('Hamlet.txt','r+')
+f_text = open(name_file+'.txt','r+')
 
 #On ouvre et stocke les fichiers contenant les solutions (ils vont nous permettre d'évaluer notre application)
-f_characters = open('Hamlet_CHARACTERS.txt','r+')
-f_relationships = open('Hamlet_RELATIONSHIPS.txt','r+')
+f_characters = open(name_file+'_CHARACTERS.txt','r+')
+f_relationships = open(name_file+'_RELATIONSHIPS.txt','r+')
 file_characters = f_characters.read()
 file_relationships = f_relationships.read()
 
@@ -89,4 +88,4 @@ for elt in RELATIONSHIPS :
 #On évalue le résultat
 print("EVALUATION :")
 sol_CHARACTERS, sol_RELATIONSHIPS = makefile_solutions(file_characters,file_relationships)
-accuracy(sol_CHARACTERS,sol_RELATIONSHIPS,RELATIONSHIPS)
+accuracy(sol_CHARACTERS,sol_RELATIONSHIPS,RELATIONSHIPS,LINK_CORRESPONDANCE)

@@ -1,0 +1,7 @@
+Hamlet,father,The King
+Hamlet,mother,Gertrude
+Gertrude,husband,Claudius
+Claudius,brother,The King
+Hamlet,friend,Horatio
+Hamlet,girlfriend,Ophelia
+Ophelia,brother,Laertes

@@ -1,0 +1,3 @@
+Simba,father,Mufasa
+Simba,uncle,Scar
+Simba,friend,Nala

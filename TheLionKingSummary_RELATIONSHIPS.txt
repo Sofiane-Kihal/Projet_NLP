@@ -1,0 +1,9 @@
+Rafiki,friend,Mufasa
+Mufasa,mate,Sarabi
+Mufasa,brother,Scar
+Mufasa,son,Simba
+Simba,uncle,Scar
+Simba,friend,Nala
+Nala,mother,Sarafina
+Pumbaa,companion,Timon
+Simba,mother,Sarabi

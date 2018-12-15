@@ -49,12 +49,12 @@ LINK_CORRESPONDANCE = {
     'friends' : 'friend'
 }
 
-#On extrait les personnages du texte, on les stocke dans CHARACTERS et on initialise notre dictionnaire RELATIONSHIP
+#On extrait les personnages du texte, on les stocke dans CHARACTERS et on initialise notre dictionnaire RELATIONSHIPS
 CHARACTERS = extract_NE(text,CHARACTERS)
 init_relationships(RELATIONSHIPS,CHARACTERS)
 
 #On procède à du traitement sur le texte original :
-# on découpe le texte par mot et on remplace les occurences faisant référence aux personnages telles que 'him/his/her/etc..' par le nom des personnages et on reconstitue le texte.
+# on découpe le texte par mot et on remplace les occurrences faisant référence aux personnages telles que 'him/his/her/etc..' par le nom des personnages et on reconstitue le texte.
 # On découpe en tokens de phrase ce nouveau texte.
 # Enfin, on tokénise par mot chaque phrase et on la stocke dans TOKENS où on a une liste de liste, chacune des sous-listes contenant une phrase tokenizée en mots .
 tmp_text = text.split()
@@ -64,7 +64,7 @@ text_tokens = sent_tokenize(text)
 for line in text_tokens :
     TOKENS.append(nlp.word_tokenize(line))
 
-#On fait l'analyse des dépendences grammaticales et on les stocke dans DEPENDENCIES.
+#On fait l'analyse des dépendances grammaticales et on les stocke dans DEPENDENCIES.
 parsing = nlp.dependency_parse(text)
 extract_dependencies(text_tokens,DEPENDENCIES)
 

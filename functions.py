@@ -23,7 +23,7 @@ def init_relationships(RELATIONSHIPS, CHARACTERS):
 
 def extract_dependencies(text_tokens, DEPENDENCIES):
     """
-    Extrait les dépendances 'nmod:poss' et 'appos' au sein d'un texte découpé par phrases (text_tokens) et les insère dans DEPENDENCIES.
+    Extrait les dépendances 'nmod:poss', 'appos', 'coumpund' et 'dep' au sein d'un texte découpé par phrases (text_tokens) et les insère dans DEPENDENCIES.
 
     arguments :
 
@@ -36,8 +36,7 @@ def extract_dependencies(text_tokens, DEPENDENCIES):
         parsing = nlp.dependency_parse(line)
         for elt in parsing:
 
-            if (
-                                'nmod:poss' in elt or 'appos' in elt or 'nmod' in elt or 'compound' in elt or 'dep' in elt):  # or 'dep' in elt
+            if ('nmod:poss' in elt or 'appos' in elt or 'nmod' in elt or 'compound' in elt or 'dep' in elt):
                 DEPENDENCIES[nb_line] = DEPENDENCIES[nb_line] + [(elt)]
 
         nb_line += 1
